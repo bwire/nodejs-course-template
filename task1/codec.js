@@ -1,9 +1,10 @@
 module.exports = function codec(shift) {
   function fn(mult) {
-    const alphabet_l = 'abcdefghijklmnopqrstuvwxyz';
-    const alphabet_u = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     return function result(token) {
-      const alphabet = token === token.toUpperCase() ? alphabet_u : alphabet_l;
+      const alphabet =
+        token === token.toUpperCase()
+          ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+          : 'abcdefghijklmnopqrstuvwxyz';
       return alphabet.includes(token)
         ? alphabet.charAt((alphabet.indexOf(token) + shift * mult) % 26)
         : token;
