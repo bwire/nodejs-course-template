@@ -24,5 +24,5 @@ $ node my_caesar_cli -a encode -s 7 -i "./input.txt" -o "./output.txt"
 ```
 
 ```bash
-$ node my_caesar_cli -a decodeV -s 2  
+$ node my_caesar_cli -a decode -s 2  
 ```
