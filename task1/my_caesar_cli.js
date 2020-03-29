@@ -22,10 +22,9 @@ pipeline(
   options.input ? fs.createReadStream(options.input) : process.stdin,
   action,
   options.output
-    ? fs.createWriteStream(options.output, { flags: 'wx' })
+    ? fs.createWriteStream(options.output, { flags: 'a+' })
     : process.stdout,
   error => {
-    if (!error) return;
     if (error.code === 'ENOENT') {
       console.error(`error: file not found ${error.path}`);
     } else if (error.code === 'EEXIST') {
