@@ -25,12 +25,6 @@ pipeline(
     ? fs.createWriteStream(options.output, { flags: 'a+' })
     : process.stdout,
   error => {
-    if (error.code === 'ENOENT') {
-      console.error(`error: file not found ${error.path}`);
-    } else if (error.code === 'EEXIST') {
-      console.error(`error: file already exists ${error.path}`);
-    } else {
-      console.error(error.message);
-    }
+    console.error(error.message);
   }
 );
