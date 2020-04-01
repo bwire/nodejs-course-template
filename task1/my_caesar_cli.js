@@ -25,6 +25,8 @@ pipeline(
     ? fs.createWriteStream(options.output, { flags: 'a+' })
     : process.stdout,
   error => {
-    console.error(error.message);
+    if (error) {
+      console.error(error.message);
+    }
   }
 );
