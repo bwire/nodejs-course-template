@@ -25,12 +25,7 @@ class UserService {
   }
 
   async deleteUser(id) {
-    const idDeleted = await this.repo.deleteUser(id);
-    if (idDeleted) {
-      const taskService = require('../task/taskService');
-      return await taskService.unassignUserTasks(id);
-    }
-    return idDeleted;
+    return await this.repo.deleteUser(id);
   }
 }
 
