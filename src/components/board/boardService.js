@@ -1,15 +1,35 @@
-const repo = require('./boardRepository');
+class BoardService {
+  constructor(repository, mapper) {
+    this.repo = repository;
+    this.mapper = mapper;
+  }
 
-const getAllBoards = async () => repo.getAllBoards();
-const getBoardById = async id => repo.getBoardById(id);
-const createBoard = async data => repo.createBoard(data);
-const updateBoard = async board => repo.updateBoard(board);
-const deleteBoard = async id => repo.deleteBoard(id);
+  async getAllBoards() {
+    const boards = await this.repo.getAllBoards();
+    return boards.map(board => this.mapper.toResponse(board));
+  }
 
-module.exports = {
-  getAllBoards,
-  getBoardById,
-  createBoard,
-  updateBoard,
-  deleteBoard
-};
+  async getBoardById(id) {
+    const board = await this.repo.getBoardById(id);
+    return this.mapper.toResponse(board);
+  }
+
+  async createBoard(data) {
+    const board = this.repo.createBoard(data);
+    return this.mapper.toResponse(board);
+  }
+
+  async updateBoard(data) {
+    const board = this.repo.updateBoard(data);
+    return this.mapper.toResponse(board);
+  }
+
+  async deleteBoard(id) {
+    return await this.repo.deleteBoard(id);
+  }
+}
+
+module.exports = new BoardService(
+  require('./boardRepository'),
+  require('./boardMapper')
+);
