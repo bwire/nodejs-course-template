@@ -1,54 +1,58 @@
 const router = require('express').Router();
-const Board = require('./boardModel');
-const service = require('./boardService');
+const boardService = require('./boardService');
+const taskService = require('../task/taskService');
 
 router.route('/').get(async (req, res) => {
-  const boards = await service.getAllBoards();
-  res.json(boards.map(Board.toResponse));
+  const boards = await boardService.getAllBoards();
+  res.json(boards);
+});
+
+router.route('/:id').get(async (req, res) => {
+  const board = await boardService.getBoardById(req.params.id);
+  if (board !== undefined) {
+    res.json(board);
+  } else {
+    res.status(404).send('Board not found');
+  }
 });
 
 router.route('/').post(async (req, res) => {
   const { title, columns } = req.body;
-  const board = await service.createBoard({ title, columns });
+  const board = await boardService.createBoard({ title, columns });
   if (board !== undefined) {
     res.statusMessage = 'The board has been created';
-    res.json(Board.toResponse(board));
+    res.json(board);
   } else {
-    res.statusCode = 400;
-    res.send({ error: 'Bad request' });
-  }
-});
-
-router.route('/:id').get(async (req, res) => {
-  const board = await service.getBoardById(req.params.id);
-  if (board !== undefined) {
-    res.json(Board.toResponse(board));
-  } else {
-    res.statusCode = 404;
-    res.send({ error: 'Board not found' });
+    res.status(400).send('Bad request');
   }
 });
 
 router.route('/:id').put(async (req, res) => {
-  const board = await service.updateBoard({
+  const board = await boardService.updateBoard({
     id: req.params.id,
     title: req.body.title,
     columns: req.body.columns
   });
   if (board !== undefined) {
-    res.json(Board.toResponse(board));
+    res.json(board);
   } else {
-    res.statusCode = 400;
-    res.send({ error: 'Bad request' });
+    res.status(400).send('Bad request');
   }
 });
 
 router.route('/:id').delete(async (req, res) => {
-  res.statusCode = await service.deleteBoard(req.params.id);
-  if (res.statusCode === 204) {
-    res.json({ status: 'The board has been deleted' });
+  const { id } = req.params;
+  let idDeleted = await boardService.deleteBoard(id);
+
+  if (idDeleted) {
+    idDeleted = await taskService.deleteBoardTasks(id);
+
+    console.log('after promise', idDeleted);
+  }
+  if (idDeleted) {
+    res.status(204).send('The board has been deleted');
   } else {
-    res.send({ error: 'Board not found' });
+    res.status(404).send('Board not found');
   }
 });
 

@@ -1,9 +1,8 @@
-const uuid = require('uuid');
 const Column = require('../column/columnModel');
 
-class Board {
+module.exports = class {
   constructor({
-    id = uuid(),
+    id = require('uuid')(),
     title,
     columns = [
       new Column({ title: 'Doing', order: 1 }),
@@ -14,10 +13,4 @@ class Board {
     this.title = title;
     this.columns = columns;
   }
-
-  static toResponse(board) {
-    return { ...board };
-  }
-}
-
-module.exports = Board;
+};
