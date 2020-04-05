@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const userService = require('./userService');
-const taskService = require('../task/taskService');
+const taskService = require('../tasks/taskService');
 
 router.route('/').get(async (req, res) => {
   const users = await userService.getAllUsers();
@@ -19,8 +19,6 @@ router.route('/').post(async (req, res) => {
 });
 
 router.route('/:id').get(async (req, res) => {
-  console.log('params', req.url);
-
   const user = await userService.getUserById(req.params.id);
   if (user !== undefined) {
     res.json(user);
@@ -43,11 +41,11 @@ router.route('/:id').put(async (req, res) => {
 
 router.route('/:id').delete(async (req, res) => {
   const { id } = req.params;
-  let idDeleted = await userService.deleteUser(id);
-  if (idDeleted) {
-    idDeleted = await taskService.unassignUserTasks(id);
-  }
-  if (idDeleted) {
+  const ids = await Promise.all([
+    userService.deleteUser(id),
+    taskService.unassignUserTasks(id)
+  ]);
+  if (ids) {
     res.status(204).send('The user has been deleted');
   } else {
     res.status(404).send('User not found');

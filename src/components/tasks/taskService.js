@@ -34,13 +34,9 @@ class TaskService {
 
   async deleteBoardTasks(boardId) {
     const tasks = await this.getAllTasks(boardId);
-    console.log(
-      'tasks',
-      tasks.map(task => task.id)
-    );
-    return await Promise.all(
-      tasks.map(async task => this.deleteTask(task.id))
-    ).then(() => boardId);
+    return await Promise.all(tasks.map(async task => this.deleteTask(task.id)))
+      .then(() => boardId)
+      .catch(() => undefined);
   }
 }
 

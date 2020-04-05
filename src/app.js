@@ -17,8 +17,8 @@ app.use('/', (req, res, next) => {
   next();
 });
 
-app.use('/users', require('./components/user/userRouter'));
-app.use('/boards', require('./components/board/boardRouter'));
-app.use('/boards/:boardId/tasks', require('./components/task/taskRouter'));
+app.use('/users', require('./components/users/userRouter'));
+app.use('/boards', require('./components/boards/boardRouter'));
+app.use('/boards/:boardId/tasks', require('./components/tasks/taskRouter'));
 
 module.exports = app;

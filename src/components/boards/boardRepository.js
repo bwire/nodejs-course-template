@@ -39,9 +39,9 @@ class BoardRepository {
     const idx = this.boards.findIndex(board => board.id === id);
     if (idx !== -1) {
       this.boards.splice(idx, 1);
-      return 204;
+      return id;
     }
-    return 404;
+    return undefined;
   }
 }
 
