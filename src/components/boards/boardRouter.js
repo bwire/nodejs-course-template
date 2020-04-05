@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const boardService = require('./boardService');
-const taskService = require('../task/taskService');
+const taskService = require('../tasks/taskService');
 
 router.route('/').get(async (req, res) => {
   const boards = await boardService.getAllBoards();
@@ -42,14 +42,11 @@ router.route('/:id').put(async (req, res) => {
 
 router.route('/:id').delete(async (req, res) => {
   const { id } = req.params;
-  let idDeleted = await boardService.deleteBoard(id);
-
-  if (idDeleted) {
-    idDeleted = await taskService.deleteBoardTasks(id);
-
-    console.log('after promise', idDeleted);
-  }
-  if (idDeleted) {
+  const ids = await Promise.all([
+    boardService.deleteBoard(id),
+    taskService.deleteBoardTasks(id)
+  ]);
+  if (ids) {
     res.status(204).send('The board has been deleted');
   } else {
     res.status(404).send('Board not found');

@@ -1,4 +1,4 @@
-const Column = require('../column/columnModel');
+const Column = require('../columns/columnModel');
 
 module.exports = class {
   constructor({
