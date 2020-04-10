@@ -6,7 +6,7 @@ module.exports = function codec(shift) {
           ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
           : 'abcdefghijklmnopqrstuvwxyz';
       return alphabet.includes(token)
-        ? alphabet.charAt((alphabet.indexOf(token) + shift * mult) % 26)
+        ? alphabet.charAt((alphabet.indexOf(token) + shift * mult + 26) % 26)
         : token;
     };
   }
