@@ -12,8 +12,6 @@ const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 app.use(express.json());
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-app.use(handleInnerError);
-
 app.use('/', (req, res, next) => {
   if (req.originalUrl === '/') {
     res.send('Service is running!');
@@ -28,5 +26,7 @@ initLogger(app);
 app.use('/users', require('./components/users/userRouter'));
 app.use('/boards', require('./components/boards/boardRouter'));
 app.use('/boards/:boardId/tasks', require('./components/tasks/taskRouter'));
+
+app.use(handleInnerError);
 
 module.exports = app;
