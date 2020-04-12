@@ -1,3 +1,5 @@
+const { logProcessException, logPromiseRejection } = require('./logger');
+
 class InternalError extends Error {
   constructor(status, message) {
     super();
@@ -21,6 +23,7 @@ class RequestError extends Error {
 module.exports = {
   DataError,
   RequestError,
+
   handleRoute: fn => async (req, res, next) => {
     try {
       return await fn(req, res, next);
@@ -28,6 +31,17 @@ module.exports = {
       return next(err);
     }
   },
+
+  handleUncaughtException: (error, origin) => {
+    logProcessException(error, origin);
+    const exitProcess = process.exit;
+    exitProcess(1);
+  },
+
+  handleRejection: (reason, promise) => {
+    logPromiseRejection(reason, promise);
+  },
+
   // eslint-disable-next-line no-unused-vars
   handleInnerError: (err, req, res, next) => {
     if (err instanceof InternalError) {
