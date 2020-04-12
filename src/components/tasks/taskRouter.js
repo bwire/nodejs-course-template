@@ -1,6 +1,6 @@
 const router = require('express').Router({ mergeParams: true });
 const service = require('./taskService');
-const { handleRoute } = require('../../common/utils');
+const { handleRoute, DataError, RequestError } = require('../../common/errors');
 
 router.route('/').get(
   handleRoute(async (req, res) => {
@@ -15,7 +15,7 @@ router.route('/:id').get(
     if (task !== undefined) {
       res.json(task);
     } else {
-      res.status(404).send('Task not found');
+      throw new DataError('Task not found');
     }
   })
 );
@@ -36,7 +36,7 @@ router.route('/').post(
       res.statusMessage = 'The task has been created';
       res.json(task);
     } else {
-      res.status(400).send('Bad request');
+      throw new RequestError('Bad request');
     }
   })
 );
@@ -58,7 +58,7 @@ router.route('/:id').put(
       res.statusMessage = 'The task has been updated';
       res.json(task);
     } else {
-      res.status(400).send('Bad request');
+      throw new RequestError('Bad request');
     }
   })
 );
@@ -69,7 +69,7 @@ router.route('/:id').delete(
     if (idDeleted) {
       res.status(204).send('The board has been deleted');
     } else {
-      res.status(404).send('Task not found');
+      throw new DataError('Task not found');
     }
   })
 );

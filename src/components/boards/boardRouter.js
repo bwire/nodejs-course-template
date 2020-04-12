@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const boardService = require('./boardService');
 const taskService = require('../tasks/taskService');
-const { handleRoute } = require('../../common/utils');
+const { handleRoute, DataError, RequestError } = require('../../common/errors');
 
 router.route('/').get(
   handleRoute(async (req, res) => {
@@ -16,7 +16,7 @@ router.route('/:id').get(
     if (board !== undefined) {
       res.json(board);
     } else {
-      res.status(404).send('Board not found');
+      throw new DataError('Board not found');
     }
   })
 );
@@ -29,7 +29,7 @@ router.route('/').post(
       res.statusMessage = 'The board has been created';
       res.json(board);
     } else {
-      res.status(400).send('Bad request');
+      throw new RequestError('Bad request');
     }
   })
 );
@@ -44,7 +44,7 @@ router.route('/:id').put(
     if (board !== undefined) {
       res.json(board);
     } else {
-      res.status(400).send('Bad request');
+      throw new RequestError('Bad request');
     }
   })
 );
@@ -59,7 +59,7 @@ router.route('/:id').delete(
     if (ids) {
       res.status(204).send('The board has been deleted');
     } else {
-      res.status(404).send('Board not found');
+      throw new DataError('Board not found');
     }
   })
 );

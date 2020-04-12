@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const userService = require('./userService');
 const taskService = require('../tasks/taskService');
-const { handleRoute } = require('../../common/utils');
+const { handleRoute, DataError, RequestError } = require('../../common/errors');
 
 router.route('/').get(
   handleRoute(async (req, res) => {
@@ -18,7 +18,7 @@ router.route('/').post(
       res.statusMessage = 'The user has been created';
       res.json(user);
     } else {
-      res.status(400).send('Bad request');
+      throw new RequestError('Bad request');
     }
   })
 );
@@ -29,7 +29,7 @@ router.route('/:id').get(
     if (user !== undefined) {
       res.json(user);
     } else {
-      res.status(404).send('User not found');
+      throw new DataError('User not found');
     }
   })
 );
@@ -43,7 +43,7 @@ router.route('/:id').put(
       res.statusMessage = 'The user has been updated';
       res.json(user);
     } else {
-      res.status(400).send('Bad request');
+      throw new RequestError('Bad request');
     }
   })
 );
@@ -58,7 +58,7 @@ router.route('/:id').delete(
     if (ids) {
       res.status(204).send('The user has been deleted');
     } else {
-      res.status(404).send('User not found');
+      throw new DataError('User not found');
     }
   })
 );
