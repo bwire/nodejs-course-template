@@ -13,7 +13,7 @@ router.route('/').get(
 router.route('/:id').get(
   handleRoute(async (req, res) => {
     const board = await boardService.getBoardById(req.params.id);
-    if (board !== undefined) {
+    if (board) {
       res.json(board);
     } else {
       throw new DataError('Board not found');
@@ -25,7 +25,7 @@ router.route('/').post(
   handleRoute(async (req, res) => {
     const { title, columns } = req.body;
     const board = await boardService.createBoard({ title, columns });
-    if (board !== undefined) {
+    if (board) {
       res.statusMessage = 'The board has been created';
       res.json(board);
     } else {
@@ -41,7 +41,7 @@ router.route('/:id').put(
       title: req.body.title,
       columns: req.body.columns
     });
-    if (board !== undefined) {
+    if (board) {
       res.json(board);
     } else {
       throw new RequestError('Bad request');
@@ -52,15 +52,12 @@ router.route('/:id').put(
 router.route('/:id').delete(
   handleRoute(async (req, res) => {
     const { id } = req.params;
-    const ids = await Promise.all([
-      boardService.deleteBoard(id),
-      taskService.deleteBoardTasks(id)
-    ]);
-    if (ids) {
-      res.status(204).send('The board has been deleted');
-    } else {
+    const boardDeleted = await boardService.deleteBoard(id);
+    if (!boardDeleted) {
       throw new DataError('Board not found');
     }
+    await taskService.deleteBoardTasks(id);
+    res.status(204).send('The board has been deleted');
   })
 );
 

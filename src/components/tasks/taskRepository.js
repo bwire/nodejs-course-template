@@ -1,52 +1,34 @@
 class TaskRepository {
   constructor(model) {
-    this.tasks = [];
     this.model = model;
   }
 
-  createNewTaskFromModel(data) {
-    return new this.model(data);
-  }
-
   async getAllTasks(boardId) {
-    return this.tasks.filter(t => t.boardId === boardId);
+    return await this.model.find({ boardId });
   }
 
   async getTaskById(boardId, taskId) {
-    return this.tasks.find(t => t.boardId === boardId && t.id === taskId);
+    return await this.model.findOne({ id: taskId, boardId });
   }
 
   async createTask(data) {
-    const task = this.createNewTaskFromModel(data);
-    this.tasks.push(task);
-    return task;
+    return this.model.create(data);
   }
 
   async updateTask(data) {
-    const idx = this.tasks.findIndex(task => task.id === data.id);
-    if (idx !== -1) {
-      this.tasks[idx] = data;
-      return this.tasks[idx];
-    }
-    return undefined;
+    return this.model.update({ id: data.id }, data);
   }
 
   async deleteTask(id) {
-    const idx = this.tasks.findIndex(task => task.id === id);
-    if (idx !== -1) {
-      this.tasks.splice(idx, 1);
-      return id;
-    }
-    return undefined;
+    return await this.model.deleteOne({ id });
   }
 
   async unassignUserTasks(userId) {
-    this.tasks.map(task => {
-      if (task.userId === userId) {
-        task.userId = null;
-      }
-    });
-    return userId;
+    return await this.model.updateMany({ userId }, { userId: null });
+  }
+
+  async deleteBoardTasks(boardId) {
+    return await this.model.deleteMany({ boardId });
   }
 }
 

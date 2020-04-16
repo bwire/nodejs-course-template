@@ -12,7 +12,7 @@ router.route('/').get(
 router.route('/:id').get(
   handleRoute(async (req, res) => {
     const task = await service.getTaskById(req.params.boardId, req.params.id);
-    if (task !== undefined) {
+    if (task) {
       res.json(task);
     } else {
       throw new DataError('Task not found');
@@ -67,7 +67,7 @@ router.route('/:id').delete(
   handleRoute(async (req, res) => {
     const idDeleted = await service.deleteTask(req.params.id);
     if (idDeleted) {
-      res.status(204).send('The board has been deleted');
+      res.status(204).send('The task has been deleted');
     } else {
       throw new DataError('Task not found');
     }

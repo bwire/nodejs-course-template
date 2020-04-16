@@ -1,47 +1,26 @@
 class BoardRepository {
   constructor(model) {
     this.model = model;
-    this.boards = [
-      new this.model({ title: 'Development' }),
-      new this.model({ title: 'Sales' })
-    ];
   }
 
   async getAllBoards() {
-    return this.boards;
+    return await this.model.find({});
   }
 
   async getBoardById(id) {
-    return this.boards.find(board => board.id === id);
+    return await this.model.findOne({ id });
   }
 
   async createBoard(data) {
-    if (data.title) {
-      const board = new this.model({ ...data });
-      this.boards.push(board);
-      return board;
-    }
-    return undefined;
+    return await this.model.create(data);
   }
 
-  async updateBoard(board) {
-    const idx = this.boards.findIndex(b => b.id === board.id);
-    if (idx !== -1) {
-      const b = this.boards[idx];
-      b.title = board.title;
-      b.columns = board.columns;
-      return b;
-    }
-    return undefined;
+  async updateBoard(data) {
+    return await this.model.update({ id: data.id }, data);
   }
 
   async deleteBoard(id) {
-    const idx = this.boards.findIndex(board => board.id === id);
-    if (idx !== -1) {
-      this.boards.splice(idx, 1);
-      return id;
-    }
-    return undefined;
+    return await this.model.findOneAndDelete({ id });
   }
 }
 

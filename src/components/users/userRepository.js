@@ -8,9 +8,7 @@ class UserRepository {
   }
 
   async getUserById(id) {
-    const user = await this.model.findOne({ _id: id });
-    console.log('user by id', user);
-    return user;
+    return await this.model.findOne({ id });
   }
 
   async createUser(data) {
@@ -18,11 +16,11 @@ class UserRepository {
   }
 
   async updateUser(data) {
-    return this.model.update({ _id: data.id }, data);
+    return this.model.update({ id: data.id }, data);
   }
 
   async deleteUser(id) {
-    return await this.model.deleteOne({ _id: id });
+    return await this.model.deleteOne({ id });
   }
 }
 

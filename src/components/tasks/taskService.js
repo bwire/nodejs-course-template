@@ -33,10 +33,7 @@ class TaskService {
   }
 
   async deleteBoardTasks(boardId) {
-    const tasks = await this.getAllTasks(boardId);
-    return await Promise.all(tasks.map(async task => this.deleteTask(task.id)))
-      .then(() => boardId)
-      .catch(() => undefined);
+    return await this.repo.deleteBoardTasks(boardId);
   }
 }
 

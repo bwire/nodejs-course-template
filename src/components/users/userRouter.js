@@ -26,7 +26,7 @@ router.route('/').post(
 router.route('/:id').get(
   handleRoute(async (req, res) => {
     const user = await userService.getUserById(req.params.id);
-    if (user !== undefined) {
+    if (user) {
       res.json(user);
     } else {
       throw new DataError('User not found');
@@ -39,7 +39,7 @@ router.route('/:id').put(
     const { id } = req.params;
     const { name, login, password } = req.body;
     const user = await userService.updateUser({ id, name, login, password });
-    if (user !== undefined) {
+    if (user) {
       res.statusMessage = 'The user has been updated';
       res.json(user);
     } else {
@@ -51,11 +51,11 @@ router.route('/:id').put(
 router.route('/:id').delete(
   handleRoute(async (req, res) => {
     const { id } = req.params;
-    const ids = await Promise.all([
+    const results = await Promise.all([
       userService.deleteUser(id),
       taskService.unassignUserTasks(id)
     ]);
-    if (ids) {
+    if (results) {
       res.status(204).send('The user has been deleted');
     } else {
       throw new DataError('User not found');
