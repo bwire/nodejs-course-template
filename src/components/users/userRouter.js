@@ -14,7 +14,7 @@ router.route('/').post(
   handleRoute(async (req, res) => {
     const { name, login, password } = req.body;
     const user = await userService.createUser({ name, login, password });
-    if (user !== undefined) {
+    if (user) {
       res.statusMessage = 'The user has been created';
       res.json(user);
     } else {
@@ -51,11 +51,9 @@ router.route('/:id').put(
 router.route('/:id').delete(
   handleRoute(async (req, res) => {
     const { id } = req.params;
-    const results = await Promise.all([
-      userService.deleteUser(id),
-      taskService.unassignUserTasks(id)
-    ]);
-    if (results) {
+    const deleted = await userService.deleteUser(id);
+    if (deleted) {
+      await taskService.unassignUserTasks(id);
       res.status(204).send('The user has been deleted');
     } else {
       throw new DataError('User not found');

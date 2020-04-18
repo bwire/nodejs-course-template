@@ -65,8 +65,8 @@ router.route('/:id').put(
 
 router.route('/:id').delete(
   handleRoute(async (req, res) => {
-    const idDeleted = await service.deleteTask(req.params.id);
-    if (idDeleted) {
+    const deleted = await service.deleteTask(req.params.id);
+    if (deleted) {
       res.status(204).send('The task has been deleted');
     } else {
       throw new DataError('Task not found');

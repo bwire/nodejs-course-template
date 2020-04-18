@@ -11,6 +11,7 @@ const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 module.exports = launchFn => {
+  const connectFn = dbFn(launchFn);
   app.use(express.json());
   app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
@@ -29,6 +30,6 @@ module.exports = launchFn => {
   app.use('/boards', require('./components/boards/boardRouter'));
   app.use('/boards/:boardId/tasks', require('./components/tasks/taskRouter'));
 
-  dbFn(launchFn, app);
+  connectFn(app);
   app.use(handleInnerError);
 };

@@ -52,12 +52,13 @@ router.route('/:id').put(
 router.route('/:id').delete(
   handleRoute(async (req, res) => {
     const { id } = req.params;
-    const boardDeleted = await boardService.deleteBoard(id);
-    if (!boardDeleted) {
+    const deleted = await boardService.deleteBoard(id);
+    if (deleted) {
+      await taskService.deleteBoardTasks(id);
+      res.status(204).send('The board has been deleted');
+    } else {
       throw new DataError('Board not found');
     }
-    await taskService.deleteBoardTasks(id);
-    res.status(204).send('The board has been deleted');
   })
 );
 
