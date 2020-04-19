@@ -20,7 +20,7 @@ class BoardRepository {
   }
 
   async deleteBoard(id) {
-    return await this.model.deleteOne({ id });
+    return (await this.model.deleteOne({ id })).deletedCount;
   }
 }
 

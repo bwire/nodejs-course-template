@@ -20,7 +20,7 @@ class TaskRepository {
   }
 
   async deleteTask(id) {
-    return await this.model.deleteOne({ id });
+    return (await this.model.deleteOne({ id })).deletedCount;
   }
 
   async unassignUserTasks(userId) {
