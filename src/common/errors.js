@@ -20,9 +20,16 @@ class RequestError extends Error {
   }
 }
 
+class ForbiddenError extends Error {
+  constructor(message) {
+    super(403, message);
+  }
+}
+
 module.exports = {
   DataError,
   RequestError,
+  ForbiddenError,
 
   handleRoute: fn => async (req, res, next) => {
     try {
