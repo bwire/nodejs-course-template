@@ -1,16 +1,15 @@
-const bcrypt = require('bcrypt');
-const { BCRYPT_SALT_ROUNDS } = require('../../common/config');
-
 class UserService {
-  constructor(repository, mapper) {
+  constructor(repository, mapper, bcrypt, { BCRYPT_SALT_ROUNDS }) {
     this.repo = repository;
     this.mapper = mapper;
+    this.bcrypt = bcrypt;
+    this.salt = BCRYPT_SALT_ROUNDS;
   }
 
   async authenticateUser(userData) {
     const user = await this.repo.getUserByLogin(userData.login);
     if (user) {
-      const match = await bcrypt.compare(userData.password, user.password);
+      const match = await this.bcrypt.compare(userData.password, user.password);
       if (match) {
         return { id: user.id, login: user.login };
       }
@@ -29,7 +28,7 @@ class UserService {
   }
 
   async createUser(data) {
-    const hash = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
+    const hash = await this.bcrypt.hash(data.password, this.salt);
     const user = await this.repo.createUser({ ...data, password: hash });
     return this.mapper.toResponse(user);
   }
@@ -46,5 +45,7 @@ class UserService {
 
 module.exports = new UserService(
   require('./userRepository'),
-  require('./userMapper')
+  require('./userMapper'),
+  require('bcrypt'),
+  require('../../common/config')
 );
