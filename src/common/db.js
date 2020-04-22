@@ -13,7 +13,6 @@ module.exports = launchFn => {
     });
     db.once('open', () => {
       console.log('Connection to the database established...');
-      db.dropDatabase();
       launchFn(app);
     });
     return db;
