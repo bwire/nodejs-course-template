@@ -1,3 +1,6 @@
+const bcrypt = require('bcrypt');
+const { BCRYPT_SALT_ROUNDS } = require('../../common/config');
+
 class UserService {
   constructor(repository, mapper) {
     this.repo = repository;
@@ -15,7 +18,8 @@ class UserService {
   }
 
   async createUser(data) {
-    const user = await this.repo.createUser(data);
+    const hash = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
+    const user = await this.repo.createUser({ ...data, password: hash });
     return this.mapper.toResponse(user);
   }
 
