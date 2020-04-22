@@ -26,6 +26,7 @@ module.exports = launchFn => {
   // requests logging
   initLogger(app);
 
+  app.use('/login', require('./components/users/auth/authRouter'));
   app.use('/users', require('./components/users/userRouter'));
   app.use('/boards', require('./components/boards/boardRouter'));
   app.use('/boards/:boardId/tasks', require('./components/tasks/taskRouter'));
