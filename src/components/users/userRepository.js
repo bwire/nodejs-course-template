@@ -11,6 +11,10 @@ class UserRepository {
     return await this.model.findOne({ id });
   }
 
+  async getUserByLogin(login) {
+    return await this.model.findOne({ login });
+  }
+
   async createUser(data) {
     return this.model.create(data);
   }
