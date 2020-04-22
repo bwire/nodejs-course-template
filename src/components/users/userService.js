@@ -7,6 +7,17 @@ class UserService {
     this.mapper = mapper;
   }
 
+  async authenticateUser(userData) {
+    const user = await this.repo.getUserByLogin(userData.login);
+    if (user) {
+      const match = await bcrypt.compare(userData.password, user.password);
+      if (match) {
+        return { id: user.id, login: user.login };
+      }
+    }
+    return null;
+  }
+
   async getAllUsers() {
     const users = await this.repo.getAllUsers();
     return users.map(user => this.mapper.toResponse(user));
