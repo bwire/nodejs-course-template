@@ -5,6 +5,8 @@ const YAML = require('yamljs');
 
 const { initLogger } = require('./common/logger');
 const { handleInnerError } = require('./common/errors');
+const { isAuthenticated } = require('./common/middleware');
+
 const dbFn = require('./common/db');
 
 const app = express();
@@ -26,10 +28,18 @@ module.exports = launchFn => {
   // requests logging
   initLogger(app);
 
-  app.use('/login', require('./components/users/auth/authRouter'));
-  app.use('/users', require('./components/users/userRouter'));
-  app.use('/boards', require('./components/boards/boardRouter'));
-  app.use('/boards/:boardId/tasks', require('./components/tasks/taskRouter'));
+  app.use('/login', require('./components/auth/authRouter'));
+  app.use('/users', isAuthenticated, require('./components/users/userRouter'));
+  app.use(
+    '/boards',
+    isAuthenticated,
+    require('./components/boards/boardRouter')
+  );
+  app.use(
+    '/boards/:boardId/tasks',
+    isAuthenticated,
+    require('./components/tasks/taskRouter')
+  );
 
   connectFn(app);
   app.use(handleInnerError);

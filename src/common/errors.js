@@ -14,15 +14,21 @@ class DataError extends InternalError {
   }
 }
 
-class RequestError extends Error {
+class RequestError extends InternalError {
   constructor(message) {
     super(400, message);
   }
 }
 
-class ForbiddenError extends Error {
+class ForbiddenError extends InternalError {
   constructor(message) {
     super(403, message);
+  }
+}
+
+class AuthenticationError extends InternalError {
+  constructor(message) {
+    super(401, message);
   }
 }
 
@@ -30,6 +36,7 @@ module.exports = {
   DataError,
   RequestError,
   ForbiddenError,
+  AuthenticationError,
 
   handleRoute: fn => async (req, res, next) => {
     try {
